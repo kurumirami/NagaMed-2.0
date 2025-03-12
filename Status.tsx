@@ -32,14 +32,4 @@ const styles = StyleSheet.create({
   NavBar: { flexDirection: "row", justifyContent: "space-around", position: "absolute", bottom: 0, width: "100%", backgroundColor: "#fff", paddingVertical: 10, borderTopWidth: 1, borderTopColor: "#ccc" },
   navButton: { paddingVertical: 10, paddingHorizontal: 15 },
   navText: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  naga: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#007bff',
-  },
-  med: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#28a745',
-  },
 });
