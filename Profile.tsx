@@ -17,7 +17,7 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.naga}>Naga <Text style={styles.med} >Med</Text></Text>
+
 
       <View style={styles.content}>
         
@@ -80,14 +80,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
-  naga: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#007bff',
-  },
-  med: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#28a745',
-  },
+
 });
