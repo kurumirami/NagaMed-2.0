@@ -6,7 +6,7 @@ export default function Status() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.naga}>Naga <Text style={styles.med} >Med</Text></Text>
+
       <Text style={styles.info}>Check the status of your appointments.</Text>
 
       <View style={styles.card}>
