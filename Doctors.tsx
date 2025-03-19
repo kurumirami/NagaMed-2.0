@@ -8,7 +8,7 @@ export default function Doctors() {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.naga}>Naga <Text style={styles.med} >Med</Text></Text>
+      
         
       
 

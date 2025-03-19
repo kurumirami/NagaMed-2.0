@@ -4,25 +4,51 @@ import { useRouter } from "expo-router";
 export default function Appointment() {
   const router = useRouter();
 
+  const CreateAppointment = () => {
+    router.push("/CreateAppointment") 
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.info}>Schedule and manage your appointments.</Text>
+      <Text style={styles.header}>Book an Appointment</Text>
+      <Text style={styles.info}>Schedule an appointment with your preferred doctor.</Text>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Book an Appointment</Text>
+      {/* Book Appointment Button */}
+      <TouchableOpacity style={styles.createAppointment} onPress={CreateAppointment}>
+        <Text style={styles.createAppointmentText}>Book an Appointment</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "space-between", alignItems: "center", backgroundColor: "#f9f9f9" },
-  header: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
-  info: { fontSize: 16, color: "#666", marginBottom: 20 },
-  button: { backgroundColor: "blue", padding: 15, borderRadius: 8 },
-  buttonText: { color: "white", fontSize: 18, fontWeight: "bold" },
-  NavBar: { flexDirection: "row", justifyContent: "space-around", position: "absolute", bottom: 0, width: "100%", backgroundColor: "#fff", paddingVertical: 10, borderTopWidth: 1, borderTopColor: "#ccc" },
-  navButton: { paddingVertical: 10, paddingHorizontal: 15 },
-  navText: { fontSize: 16, fontWeight: "bold", color: "#333" },
-
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  info: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  createAppointment: {
+    backgroundColor: "blue",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  createAppointmentText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });

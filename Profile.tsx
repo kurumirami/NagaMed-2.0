@@ -8,8 +8,8 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("userToken"); // Clear stored auth token
-      router.replace("/"); // Redirect to login or home screen
+      await AsyncStorage.removeItem("userToken"); 
+      router.replace("/"); 
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -17,7 +17,7 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-
+      
 
       <View style={styles.content}>
         
@@ -80,5 +80,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
-
+  naga: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#007bff',
+  },
+  med: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#28a745',
+  },
 });

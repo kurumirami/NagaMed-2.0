@@ -12,7 +12,7 @@ import { useRouter, Stack } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function CreateAccount() {
-  const [fullName, setFullName] = useState('');
+  const [fullname, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -35,7 +35,7 @@ export default function CreateAccount() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fullName, username, password }),
+        body: JSON.stringify({ fullname, username, password,type_id: 4 }),
       });
   
       const text = await response.text(); // Get raw response
@@ -86,7 +86,7 @@ export default function CreateAccount() {
               <TextInput
                 style={styles.input}
                 placeholder="Enter your full name"
-                value={fullName}
+                value={fullname}
                 onChangeText={setFullName}
                 autoCapitalize="words"
               />

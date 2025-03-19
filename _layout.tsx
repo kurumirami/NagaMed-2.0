@@ -44,7 +44,7 @@ export default function Layout() {
       {/* Stack Navigation */}
       <View style={styles.content}>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Index" />
+          <Stack.Screen name="index" />
           <Stack.Screen name="Signin" />
           <Stack.Screen name="Home" />
           <Stack.Screen name="Profile" />
@@ -100,12 +100,14 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "Pnpx eoppins",
+    fontWeight: "800",
     color: "#007bff",
   },
   med: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily:"Poppins",
+    fontWeight: "800",
     color: "#28a745",
   },
   iconButton: {
