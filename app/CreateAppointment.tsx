@@ -160,7 +160,7 @@ export default function Appointment() {
             </View>
           </View>
 
-          {/* Date Picker */}
+          
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Select a Date</Text>
             <TouchableOpacity style={styles.datePicker} onPress={() => setShowDatePicker(true)}>
@@ -182,7 +182,7 @@ export default function Appointment() {
             )}
           </View>
 
-          {/* Reason Input */}
+          
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Reason for Consultation</Text>
             <TextInput
