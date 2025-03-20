@@ -7,8 +7,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, Stack } from "expo-router";
 
 export default function SignIn() {
@@ -22,7 +22,7 @@ export default function SignIn() {
     console.log("Signing in with:", username, password);
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch("https://devapi-618v.onrender.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,13 +33,20 @@ export default function SignIn() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Login Successful:", data);
-        setErrorMessage("");
+        Alert.alert("Login Successful:", data.message || "Welcome back!", [
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ]);
+        
+        
 
-      
-
+        // Navigate to Home Page
         router.push("/Home");
       } else {
+        // Show alert when credentials are invalid
+        Alert.alert("Login Failed", data.message || "Invalid username or password.", [
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ]);
+
         setErrorMessage(data.message || "Invalid username or password.");
       }
     } catch (error) {

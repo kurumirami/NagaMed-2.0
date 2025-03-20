@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useRouter, Stack } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
@@ -19,22 +20,28 @@ export default function CreateAccount() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const handleSignUp = async () => {
+    if (!fullname.trim()) {
+      Alert.alert("Error", "Full Name is required.");
+      return;
+    }
+    if (!username.trim()) {
+      Alert.alert("Error", "Username is required.");
+      return;
+    }
     if (password.length < 8) {
-      setErrorMessage("Password must be at least 8 characters long.");
+      Alert.alert("Error", "Password must be at least 8 characters long.");
       return;
     }
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+      Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
-    setErrorMessage("");
     setLoading(true);
 
     try {
@@ -46,44 +53,49 @@ export default function CreateAccount() {
         body: JSON.stringify({ fullname, username, password, type_id: 4 }),
       });
 
-      const text = await response.text();
-      console.log("Raw Response:", text);
-
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error("Failed to parse JSON:", e);
-        setErrorMessage("Unexpected server response.");
-        setLoading(false);
-        return;
-      }
-
-      console.log("Response Status:", response.status);
-      console.log("Response Data:", data);
+      const data = await response.json();
 
       if (response.ok) {
-        console.log("Account created successfully:", data);
-        setLoading(false);
-        router.push("/Signin");
+        Alert.alert("Success", "Account created successfully! Logging you in...", [
+          { text: "OK", onPress: () => loginUser() },
+        ]);
       } else {
-        setErrorMessage(data.message || "Failed to create account.");
-        setLoading(false);
+        Alert.alert("Signup Failed", data.message || "Failed to create account.");
       }
     } catch (error) {
-      console.error("Error signing up:", error);
-      setErrorMessage("Network error. Please try again.");
+      Alert.alert("Network Error", "Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const loginUser = async () => {
+    try {
+      const response = await fetch("https://devapi-618v.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const loginData = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Login Successful", "Welcome to NagaMed!", [
+          { text: "OK", onPress: () => router.push("/Home") },
+        ]);
+      } else {
+        Alert.alert("Login Failed", "Account created, but login failed. Please try manually.");
+        router.push("/Signin");
+      }
+    } catch (error) {
+      Alert.alert("Login Error", "Network issue. Please try logging in manually.");
     }
   };
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
         <View style={styles.formContainer}>
           <View style={styles.logoContainer}>
             <Text style={styles.naga}>Naga</Text>
@@ -98,6 +110,7 @@ export default function CreateAccount() {
               <TextInput
                 style={styles.input}
                 placeholder="Enter your full name"
+                placeholderTextColor="#999"
                 value={fullname}
                 onChangeText={setFullName}
                 autoCapitalize="words"
@@ -111,6 +124,7 @@ export default function CreateAccount() {
               <TextInput
                 style={styles.input}
                 placeholder="Enter your username"
+                placeholderTextColor="#999"
                 value={username}
                 onChangeText={setUsername}
                 autoCapitalize="none"
@@ -125,6 +139,7 @@ export default function CreateAccount() {
               <TextInput
                 style={styles.input}
                 placeholder="**********"
+                placeholderTextColor="#999"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!passwordVisible}
@@ -142,6 +157,7 @@ export default function CreateAccount() {
               <TextInput
                 style={styles.input}
                 placeholder="**********"
+                placeholderTextColor="#999"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!confirmPasswordVisible}
@@ -152,8 +168,6 @@ export default function CreateAccount() {
               </TouchableOpacity>
             </View>
           </View>
-
-          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
           <TouchableOpacity
             style={[styles.signUpButton, loading && styles.disabledButton]}
@@ -175,46 +189,14 @@ export default function CreateAccount() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  formContainer: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    gap: 16,
-    marginTop: -50,
-  },
-  logoContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  naga: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#007bff",
-  },
-  med: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#28a745",
-  },
-  sign: {
-    fontSize: 24,
-    fontWeight: "bold",
-    paddingLeft: 5,
-    color: "#1170B3",
-  },
-  inputContainer: {
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "500",
-    marginBottom: 5,
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
+  formContainer: { flex: 1, justifyContent: "center", paddingHorizontal: 20, gap: 16, marginTop: -50 },
+  logoContainer: { flexDirection: "row", justifyContent: "center" },
+  naga: { fontSize: 28, fontWeight: "700", color: "#007bff" },
+  med: { fontSize: 28, fontWeight: "700", color: "#28a745" },
+  sign: { fontSize: 24, fontWeight: "bold", paddingLeft: 5, color: "#1170B3" },
+  inputContainer: { marginBottom: 15 },
+  label: { fontSize: 16, color: "#333", fontWeight: "500", marginBottom: 5 },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -224,40 +206,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "#F5F5F5",
   },
-  input: {
-    flex: 1,
-    height: 48,
-    fontSize: 16,
-    paddingHorizontal: 10,
-  },
-  signUpButton: {
-    backgroundColor: "#28B6F6",
-    height: 48,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 24,
-  },
-  disabledButton: {
-    backgroundColor: "#aaa",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  signInRedirect: {
-    marginTop: 20,
-    alignSelf: "center",
-  },
-  loginText: {
-    color: "#007bff",
-    fontWeight: "bold",
-  },
+  input: { flex: 1, height: 48, fontSize: 16, paddingHorizontal: 10, color: "#000" },
+  signUpButton: { backgroundColor: "#28B6F6", height: 48, borderRadius: 8, justifyContent: "center", alignItems: "center", marginTop: 24 },
+  disabledButton: { backgroundColor: "#aaa" },
+  buttonText: { color: "white", fontSize: 16, fontWeight: "bold" },
+  signInRedirect: { marginTop: 20, alignSelf: "center" },
+  loginText: { color: "#007bff", fontWeight: "bold" },
 });
