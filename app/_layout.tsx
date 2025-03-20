@@ -20,16 +20,23 @@ export default function Layout() {
       {!hideNavBar && (
         <View style={styles.header}>
     
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => (isHome ? console.log("Open Notifications") : router.back())}
-          >
-            <Ionicons
-              name={isHome ? "notifications-outline" : "arrow-back"}
-              size={30}
-              color={isHome ? "blue" : "black"}
-            />
-          </TouchableOpacity>
+    <TouchableOpacity
+  style={styles.iconButton}
+  onPress={() => {
+    if (isHome) {
+      console.log("Open Notifications");
+    } else {
+      console.log("Back button pressed");
+      router.back();
+    }
+  }}
+>
+  <Ionicons
+    name={isHome ? "notifications-outline" : "arrow-back"}
+    size={30}
+    color={isHome ? "blue" : "black"}
+  />
+</TouchableOpacity>
 
           
           <Text style={styles.headerText}>
@@ -51,6 +58,7 @@ export default function Layout() {
           <Stack.Screen name="Appointment" />
           <Stack.Screen name="Doctors" />
           <Stack.Screen name="Status" />
+          <Stack.Screen name="CreateAppointment" />
         </Stack>
       </View>
 
@@ -100,7 +108,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 30,
-    fontFamily: "Pnpx eoppins",
+    fontFamily: "poppins",
     fontWeight: "800",
     color: "#007bff",
   },
