@@ -7,6 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, Stack } from "expo-router";
@@ -15,6 +16,7 @@ export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loginSuccess, setLoginSuccess] = useState(false); // State for login confirmation
   const router = useRouter();
   
   // Handle Sign-In API Call
@@ -35,10 +37,8 @@ export default function SignIn() {
       if (response.ok) {
         console.log("Login Successful:", data);
         setErrorMessage("");
-
-      
-
-        router.push("/Home");
+        // Instead of immediately navigating, show confirmation modal
+        setLoginSuccess(true);
       } else {
         setErrorMessage(data.message || "Invalid username or password.");
       }
@@ -48,9 +48,14 @@ export default function SignIn() {
     }
   };
 
+  const handleContinue = () => {
+    setLoginSuccess(false);
+    router.push("/Home");
+  };
+
   return (
     <>
-      <Stack.Screen/>
+      <Stack.Screen />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
@@ -87,7 +92,6 @@ export default function SignIn() {
             />
           </View>
 
-          {/* Error Message */}
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
           <TouchableOpacity
@@ -102,11 +106,22 @@ export default function SignIn() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      {/* Modal confirmation for successful login */}
+      <Modal visible={loginSuccess} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.successText}>You have successfully logged in!</Text>
+            <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+              <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -181,5 +196,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
     textAlign: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 20,
+    alignItems: "center",
+    width: "80%",
+  },
+  successText: {
+    color: "green",
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  continueButton: {
+    backgroundColor: "#28B6F6",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
 });
