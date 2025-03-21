@@ -23,7 +23,7 @@ export default function ForgotPassword() {
     console.log("Sending password reset code to:", email);
 
     try {
-      const response = await fetch("https://your-api.com/forgot-password", { // 🔹 Replace with actual API endpoint
+      const response = await fetch("http://localhost:8080/forgot-password", { // 🔹 Replace with actual API endpoint
         method: "POST",
         headers: {
           "Content-Type": "application/json",

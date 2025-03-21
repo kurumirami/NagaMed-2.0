@@ -22,7 +22,7 @@ export default function SignIn() {
   // Handle Sign-In API Call
   const handleSignIn = async () => {
     console.log("Signing in with:", username, password);
-
+  
     try {
       const response = await fetch("http://localhost:8080/login", {
         method: "POST",
@@ -31,22 +31,30 @@ export default function SignIn() {
         },
         body: JSON.stringify({ username, password }),
       });
-
+  
       const data = await response.json();
-
+      console.log("Response Data:", data); // 🔍 Check the API response
+  
       if (response.ok) {
+        if (!data.account_id) {
+          console.error("❌ account_id is missing in API response");
+          setErrorMessage("Login failed. No account ID found.");
+          return;
+        }
+  
         console.log("Login Successful:", data);
-        setErrorMessage("");
-        // Instead of immediately navigating, show confirmation modal
+        await AsyncStorage.setItem("account_id", data.account_id.toString());
         setLoginSuccess(true);
       } else {
+        console.error("Login Failed:", data);
         setErrorMessage(data.message || "Invalid username or password.");
       }
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.error("Network error:", error);
       setErrorMessage("Network error. Please try again.");
     }
   };
+  
 
   const handleContinue = () => {
     setLoginSuccess(false);

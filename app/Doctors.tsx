@@ -1,49 +1,57 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
-import { FontAwesome5 } from "@expo/vector-icons"; // Import icon library
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 
+export default function Doctors({ route }) {
+  const [doctors, setDoctors] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  
+  // Get Clinic ID from navigation params (If needed)
+  const clinicId = route?.params?.clinicId || 10; // Default to 10 if not provided
 
-export default function Doctors() {
-  const router = useRouter();
+  useEffect(() => {
+    fetchDoctors();
+  }, [clinicId]);
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/clinics/${clinicId}/doctors`);
+      const data = await response.json();
+      if (response.ok) {
+        setDoctors(data);
+      } else {
+        setErrorMessage(data.error || "Failed to load doctors.");
+      }
+    } catch (error) {
+      setErrorMessage("Network error. Please try again.");
+    }
+  };
+
   return (
     <View style={styles.container}>
-        
-      
+      <Text style={styles.title}>Available Doctors</Text>
 
-      <Text style={styles.info}>Find and consult with specialists.</Text>
+      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Dr. John Doe - Cardiologist</Text>
-        <Text style={styles.cardSubText}>Available: Mon-Fri</Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Dr. Jane Smith - Neurologist</Text>
-        <Text style={styles.cardSubText}>Available: Tue-Thu</Text>
-      </View>
-
-    
+      <FlatList
+        data={doctors}
+        keyExtractor={(item) => item.doctor_id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.cardText}>{item.name} - {item.specialization}</Text>
+            <Text style={styles.cardSubText}>Available: {item.availability}</Text>
+            <Text style={styles.cardSubText}>Contact: {item.contact_info}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "space-between", alignItems: "center", backgroundColor: "#f9f9f9" },
-  info: { fontSize: 16, color: "#666", marginBottom: 20 },
-  navBar: { flexDirection: "row",justifyContent: "space-around",alignItems: "center",width: "100%",position: "absolute",bottom: 0,backgroundColor: "#fff",paddingVertical: 10,borderTopWidth: 1,borderTopColor: "#ccc",},
-  navButton: { paddingVertical: 10, paddingHorizontal: 15 },
-  navText: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  card: { backgroundColor: "#fff", padding: 15, marginVertical: 10, borderRadius: 8, width: "90%", shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 5, elevation: 3 },
+  container: { flex: 1, padding: 20, backgroundColor: "#f9f9f9" },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  card: { backgroundColor: "#fff", padding: 15, marginVertical: 5, borderRadius: 8 },
   cardText: { fontSize: 18, fontWeight: "bold" },
   cardSubText: { fontSize: 14, color: "#666" },
-  naga: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#007bff',
-  },
-  med: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#28a745',
-  },
+  errorText: { color: "red", textAlign: "center", marginBottom: 10 },
 });

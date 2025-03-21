@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 
 
 export default function Home() {
-  const fullname = "User"; // Replace this with actual user data
+  const fullname = "User"; 
 
   const menuItems = [
     { text: "Book Appointment", image: require("../assets/images/bookappointments.png"), path: "/Appointment" },
